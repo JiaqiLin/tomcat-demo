@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link href="font.css" rel="stylesheet">
+  <title>上传闲置物品信息-校园易</title>
+</head>
+<body  background="./images/bd.png" style="background-repeat:no-repeat;background-attachment:fixed">
+
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+-->
+<div id="uploadIdle">
+  <!--登出提示框-->
+  <div class="modal" tabindex="-1" id="exit">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>确认退出吗？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!--导航栏部分-->
+  <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
+    <div class="container-fluid">
+      <!--主标-->
+      <a class="navbar-brand mark" href="Home.html">校园易</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!--前部分-->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="idleMALL.html?searchContent=">闲置商城</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="demandMALL.html">需求商城</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              发布
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="uploadIdle.html">发布闲置</a></li>
+              <li><a class="dropdown-item" href="uploadDemand.html">发布需求</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">发布规则</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!--后部分-->
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="selfInfo.html" class="nav-link" aria-current="page">{{user.userName}}</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="selfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              我的小易
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="myIdles.html">我的闲置</a></li>
+              <li><a class="dropdown-item" href="myDemands.html">我的需求</a></li>
+              <li><a class="dropdown-item" href="myMessages.html">我的消息</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="selfInfo.html">个人信息</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exit">退出登录</a></li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+<br><br>
+<!--主体部分-->
+<div class="container">
+  <!--提示栏-->
+  <div class="row clearfix mt-4">
+
+  <!--alert-->
+    <div class="col-12">
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>亲爱的宝友!</strong>  请保证发布信息的可靠性，这将关系到你的信用积分。
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row clearfix" >
+    <!--控制格式-->
+    <div class="col-3">
+    </div>
+    <!--表单-->
+    <div class="col-6 circle" style="background-color:rgba(255,255,255,0.5)">
+    <br>
+      <form role="form">
+        <div class="form-group inputStyle itemStyle">
+          <label for="formFileMultiple" class="form-label"><strong>标题</strong></label>
+          <input type="text" class="form-control " id="exampleInputEmail1" :class="{'is-valid':briefIsValid==='valid','is-invalid':briefIsValid==='invalid'}" @blur="briefCheck" placeholder="6-36个字符，简明地描述你的闲置物" v-model="idle.brief"/>
+          <div class="valid-feedback text-left">标题合法</div>
+          <div v-if="briefIsValid==='invalid'" class="invalid-feedback text-left">请输入6-36个字符</div>
+        </div>
+        <br>
+
+        <!--选择类别-->
+        <div class="itemStyle">
+          <label for="formFileMultiple" class="form-label"><strong>类别</strong></label>
+          <select class="form-select" v-model="idle.category" :class="{'is-valid':categoryIsValid==='valid','is-invalid':categoryIsValid==='invalid'}" @blur="categoryCheck">
+            <option selected>衣物</option>
+            <option value="饰品">饰品</option>
+            <option value="鞋子">鞋子</option>
+            <option value="其他"></option>
+            <option value="书籍">书籍</option>
+            <option value="文具">文具</option>
+            <option value="箱包">箱包</option>
+            <option value="其他"></option>
+            <option value="家具">家具</option>
+            <option value="家电">家电</option>
+            <option value="电子产品">电子产品</option>
+            <option value="其他"></option>
+            <option value="日用品">日用品</option>
+            <option value="化妆品">化妆品</option>
+            <option value="宠物用品">宠物用品</option>
+            <option value="其他"></option>
+            <option value="文体">文体</option>
+            <option value="户外">户外</option>
+            <option value="乐器">乐器</option>
+            <option value="其他"></option>
+            <option value="网游">网游</option>
+            <option value="虚拟物品">虚拟物品</option>
+            <option value="周边">周边</option>
+            <option value="其他"></option>
+            <option value="其他">其他</option>
+          </select>
+          <div class="valid-feedback text-left">类别合法</div>
+          <div v-if="categoryIsValid==='invalid'" class="invalid-feedback text-left">请选择类别</div>
+
+        </div>
+        <br>
+
+        <div class="form-group inputStyle itemStyle">
+          <label for="formFileMultiple" class="form-label"><strong>品牌</strong></label>
+          <input type="text" class="form-control " id="exampleInput" :class="{'is-valid':brandIsValid==='valid','is-invalid':brandIsValid==='invalid'}" @blur="brandCheck" placeholder="如果不知道品牌，请填无" v-model="idle.brand"/>
+          <div class="valid-feedback text-left">品牌合法</div>
+          <div v-if="brandIsValid==='invalid'" class="invalid-feedback text-left">请选择品牌</div>
+        </div>
+        <br>
+
+        <!--选择新旧情况-->
+        <div class="itemStyle">
+          <label for="formFileMultiple" class="form-label"><strong>新旧情况</strong></label>
+
+          <select class="form-select" :class="{'is-valid':oldAndNewIsValid==='valid','is-invalid':oldAndNewIsValid==='invalid'}" @blur="oldAndNewCheck" v-model="idle.oldAndNew">
+            <option selected value="九成新">九成新</option>
+            <option value="未拆封">未拆封</option>
+            <option value="全新">全新</option>
+            <option value="八成新">八成新</option>
+            <option value="七成新">七成新</option>
+            <option value="六成新">六成新</option>
+          </select>
+          <div class="valid-feedback text-left">新旧程度合法</div>
+          <div v-if="oldAndNewIsValid==='invalid'" class="invalid-feedback text-left">请选择新旧程度</div>
+        </div>
+        <br>
+
+        <!--转让价格-->
+        <div class="form-group inputStyle itemStyle">
+          <label for="formFileMultiple" class="form-label"><strong>转让价格</strong></label>
+          <input type="number" class="form-control" id="exampleInputPassword1" :class="{'is-valid':priceIsValid==='valid','is-invalid':priceIsValid==='invalid'}" @blur="priceCheck" v-model="idle.price"/>
+          <div class="valid-feedback text-left">转让价格合法</div>
+          <div v-if="priceIsValid==='invalid'" class="invalid-feedback text-left">请输入转让价格</div>
+        </div>
+        <br>
+        <!--详细描述-->
+        <div class="form-group inputStyle itemStyle">
+          <label for="formFileMultiple" class="form-label"><strong>详细描述</strong></label>
+
+          <textarea class="form-control" rows="4" placeholder="Write something here..." :class="{'is-valid':descriptionIsValid==='valid','is-invalid':descriptionIsValid==='invalid'}" @blur="descriptionCheck" v-model="idle.description"></textarea>
+          <div class="valid-feedback text-left">描述合法</div>
+          <div v-if="descriptionIsValid==='invalid'" class="invalid-feedback text-left">请输入描述</div>
+
+        </div>
+        <br>
+
+        <!--上传图片-->
+        <div class="mb-3">
+          <label for="formFileMultiple" class="form-label"><strong>上传图片</strong></label>
+          <input class="form-control" type="file" id="formFileMultiple" multiple>
+        </div>
+
+
+
+        <!--发布按钮-->
+        <div>
+          <button type="button" class="btn btn-success" style="margin-left:200px;margin-bottom:50px;margin-top:25px;width:200px" v-on:click="upload" data-bs-toggle="modal" data-bs-target="#uploadIdleTips">发 布</button>
+        </div>
+<!--        <div class="alert alert-danger" role="alert" v-if="ifUpload==false">-->
+<!--          发布失败-->
+<!--        </div>-->
+<!--        <div class="alert alert-success" role="alert" v-if="ifUpload==true">-->
+<!--          发布成功-->
+<!--        </div>-->
+
+
+      </form>
+
+    </div>
+
+    <!-- 提示框 -->
+    <div class="modal fade" id="uploadIdleTips" tabindex="-1" aria-labelledby="uploadIdleTipsLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadIdleTipsLabel">提示</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{message}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="sure">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--控制格式-->
+    <div class="col-2">
+    </div>
+  </div>
+  <br><br><br>
+
+
+
+
+</div>
+</div>
+<script>
+
+  new Vue({
+    el:"#uploadIdle",
+    data:{
+      idle:{
+        brief:"",
+        category:"",
+        brand:"",
+        oldAndNew:"",
+        price:"",
+        description:"",
+        status:"1",
+        userID:"",
+        releaseTime:""
+      },
+      user: {},
+      briefIsValid:"default",
+      categoryIsValid:"default",
+      brandIsValid:"default",
+      oldAndNewIsValid:"default",
+      priceIsValid:"default",
+      descriptionIsValid:"default",
+      message:"",
+      verifyStatus: ""
+    },
+    mounted(){
+      //获取session里的账号
+      let user = sessionStorage.getItem("userID");
+      if (user != null) {
+        // 将JSON格式的对象解析为js对象
+        this.idle.userID= JSON.parse(user);
+        axios({
+          method:"GET",
+          url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.idle.userID
+        }).then(resp=>{
+          this.user=resp.data;
+          this.verifyStatus=this.user.verifyStatus;
+          //没认证，直接跳转认证页
+          if(this.verifyStatus!==1){
+            window.location.href="identityManagement.html";
+          }
+        })
+      }
+      else {
+        window.location.href="login.html";
+      }
+
+    },
+    methods:{
+      //登出
+      exit:function () {
+        sessionStorage.removeItem("userID");
+        window.location.href="Home.html";
+      },
+      //获取当前时间函数
+      getDateTime:function() {
+
+         let date = new Date(); // 当前时间
+
+         let year = date.getFullYear(); // 年
+
+         let month = date.getMonth(); // 月
+
+         let day = date.getDate(); //日
+
+         let hours = date.getHours(); // 时
+
+         let minutes = date.getMinutes(); // 分
+
+         let seconds=date.getSeconds()  //秒
+
+         let newmonth = month < 10 ? "0" + (month + 1) : (month + 1);
+
+         let newday = day < 10 ? "0" + day : day;
+
+         let newHours = hours < 10 ? "0" + hours : hours;
+
+         let newMinutes = minutes < 10 ? "0" + minutes : minutes;
+
+         let newSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+         return year + "-" + newmonth + "-" + newday + " "+newHours+":"+newMinutes+":"+newSeconds;
+       },
+      //点击发布按钮
+      upload:function(){
+        //对输入内容做合法性检查
+        this.briefCheck();
+        this.categoryCheck();
+        this.brandCheck();
+        this.oldAndNewCheck();
+        this.priceCheck();
+        this.descriptionCheck();
+         //信息输入后才可以发布
+         if(this.briefIsValid==="valid"&&
+                this.categoryIsValid==="valid"&&
+                this.brandIsValid==="valid"&&
+                this.oldAndNewIsValid==="valid"&&
+                this.priceIsValid==="valid"&&
+                this.descriptionIsValid==="valid"){
+           //新建一个表单，因为axios，不能直接提交表单
+           let formData=new FormData();
+           this.idle.releaseTime = this.$options.methods.getDateTime();
+           //获取表单信息
+           const files = document.getElementById('formFileMultiple').files;
+           for (let index = 0; index < files.length; index++) {
+             formData.append('image', files[index]);
+           }
+           formData.append('brief',this.idle.brief);
+           formData.append('brand',this.idle.brand)
+           formData.append('category',this.idle.category);
+           formData.append('oldAndNew',this.idle.oldAndNew);
+           formData.append('price',this.idle.price);
+           formData.append('description',this.idle.description);
+           formData.append('status',this.idle.status);
+           formData.append('userID',this.idle.userID);
+           formData.append('releaseTime',this.idle.releaseTime);
+           //发送异步请求，上传数据
+           axios({
+             method:"post",
+             url:"http://localhost:8080/tomcat_demo_war/idleServlet/addIdle",
+             data:formData,
+             headers:{
+               'Content-Type': 'multipart/form-data'
+             }
+           }).then(resp=>{
+             if(resp.data==="success")
+             {
+               this.message="发布成功";
+             }
+             else{
+               this.message="发布失败";
+             }
+           })
+         }
+         else{
+             this.message="请正确填写信息";
+         }
+
+
+      },
+      //消息框的确定
+      sure:function () {
+         //如果发布成功，进行跳转
+        if(this.message==="发布成功"){
+          window.location.href="myIdles.html";
+        }
+      },
+
+      //一些表单合法验证
+      briefCheck:function () {
+        this.briefIsValid=this.idle.brief.match(".{6,36}")?"valid":"invalid";
+      },
+      categoryCheck:function () {
+        this.categoryIsValid=this.idle.category===""?"invalid":"valid";
+      },
+      brandCheck:function () {
+        this.brandIsValid=this.idle.brand===""?"invalid":"valid";
+      },
+      oldAndNewCheck:function () {
+        this.oldAndNewIsValid=this.idle.oldAndNew===""?"invalid":"valid";
+      },
+      priceCheck:function () {
+        this.priceIsValid=this.idle.price===""?"invalid":"valid";
+      },
+      descriptionCheck:function () {
+        this.descriptionIsValid=this.idle.description===""?"invalid":"valid";
+      }
+
+    }
+
+  })
+</script>
+</body>
+</html>
+

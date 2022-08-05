@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<!--namespace:名称空间-->
+<mapper namespace="com.xmu.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.xmu.pojo.User">
+        <result column="user_id" property="userID"></result>
+        <result column="student_id" property="userID"></result>
+        <result column="user_name" property="userName"></result>
+        <result column="phone_number" property="phoneNumber"></result>
+        <result column="complete_order" property="completeOrder"></result>
+        <result column="credit_score" property="creditScore"></result>
+        <result column="student_card_front" property="studentCardFront"></result>
+        <result column="student_card_contrary" property="studentCardContrary"></result>
+        <result column="verify_status" property="verifyStatus"></result>
+    </resultMap>
+
+    <resultMap id="verifyInfoResultMap" type="com.xmu.pojo.VerifyInfo">
+        <result column="user_id" property="userID"></result>
+        <result column="student_card_front" property="studentCardFront"></result>
+        <result column="student_card_contrary" property="studentCardContrary"></result>
+    </resultMap>
+
+    <select id="selectByUserIDAndPassword"  resultMap="userResultMap">
+        select *from user where user_id=#{userID} and password=#{password};
+    </select>
+
+    <select id="selectByUserID"  resultMap="userResultMap">
+        select user.user_name,user_information.user_id,user_information.name,user_information.academy,
+               user_information.major,user_information.level,user_information.phone_number,
+               user_information.QQ,user_information.WeChat,user_information.address,
+               user_information.complete_order,user_information.credit_score,user_information.brief,user_information.student_card_front,
+               user_information.student_card_contrary,user_information.verify_status
+        from user,user_information
+        where user.user_id=user_information.user_id and user.user_id=#{userID};
+    </select>
+
+    <select id="selectByUserIDInSchoolRoll" resultMap="userResultMap">
+         select student_id from school_roll where student_id=#{userID};
+    </select>
+
+    <select id="selectByUserIDAndRegisterStatusInSchoolRoll" resultMap="userResultMap">
+          select student_id from school_roll where student_id=#{userID} and register_status=0;
+    </select>
+
+    <insert id="add">
+        update school_roll set register_status=1 where student_id=#{userID};
+        insert into user(user_id,user_name,password)
+        values(#{userID},#{userName},#{password});
+        insert into user_information(user_id) values(#{userID});
+    </insert>
+
+
+    <update id="updateUserInfo">
+        update user_information set
+        name=#{name},academy=#{academy},major=#{major},level=#{level},phone_number=#{phoneNumber},QQ=#{QQ},WeChat=#{WeChat},address=#{address},brief=#{brief}
+        where user_id=#{userID};
+    </update>
+
+        <select id="getAllUsers" resultMap="userResultMap">
+        select * from user,user_information where user.user_id=user_information.user_id;
+    </select>
+
+
+
+    <insert id="addVerifyApply">
+        insert into verify_identification(user_id,student_card_front,student_card_contrary)
+        values(#{userID},#{studentCardFront},#{studentCardContrary});
+        update user_information set
+              verify_status=-1
+        where user_id=#{userID};
+    </insert>
+    <select id="selectVerifyInfoByUserID" resultMap="verifyInfoResultMap">
+        select *from verify_identification where user_id=#{userID};
+    </select>
+
+       <select id="selectByPage" resultMap="userResultMap">
+        select *
+        from user,user_information
+        where user.user_id=user_information.user_id
+        limit #{begin},#{size}
+    </select>
+
+
+    <!--分页条件查询-->
+    <select id="selectByPageAndCondition" resultMap="userResultMap">
+        select *
+        from user_information,user
+        <where>
+            <if test="user.level!=null and user.level!=''">
+                and level like #{user.level}
+            </if>
+            <if test="user.academy!=null and user.academy!=''">
+                and academy like #{user.academy}
+            </if>
+            <if test="user.userID!=null and user.userID!=''">
+                and user.user_id like #{user.userID}
+            </if>
+            <if test="1==1">
+                and user_information.user_id=user.user_id
+            </if>
+        </where>
+
+        limit #{begin}, #{size}
+    </select>
+
+
+    <!--符合条件的记录总数-->
+    <select id="selectTotalCountByCondition" resultType="java.lang.Integer">
+        select count(*)
+        from user_information
+        <where>
+            <if test="level!=null and level!=''">
+                and level = #{level}
+            </if>
+            <if test="academy!=null and academy!=''">
+                and academy like #{academy}
+            </if>
+            <if test="userID!=null and userID!=''">
+                and user_id = #{userID}
+            </if>
+        </where>
+    </select>
+
+    <!--查询所有待审核的信息-->
+    <select id="selectAllVerifyInfo" resultMap="verifyInfoResultMap">
+        select * from verify_identification;
+    </select>
+
+    <!--根据用户id删除用户信息-->
+    <delete id="deleteByUser">
+        delete from user where user_id=#{userID};
+        delete from user_information where user_id=#{userID};
+        /*删除需求表中的*/
+        delete from user where user_id=#{userID};
+
+        /*删除闲置表中的*/
+        delete from idle where user_id=#{userID};
+        /*删除身份验证中的*/
+        delete from verify_identification where user_id=#{userID};
+        /*删除闲置信息表中的*/
+        delete from idle_information where idle_number in (select idle_number from idle where user_id=#{userID});
+        /*删除需求信息表中的*/
+        delete from demand_information where demand_number in (select demand_number from demand where user_id=#{userID});
+        /*删除需求响应表中的*/
+        delete from demand_response where demand_number in (select demand_number from demand where user_id=#{userID});
+        /*改变学籍表中的注册状态*/
+        update school_roll set register_status=0 where student_id=#{userID};
+    </delete>
+
+        <!--验证未通过-->
+    <update id="verifyNotPass">
+        /*删除verify_identification里面的对应字段*/
+        delete from verify_identification where user_id=#{userID};
+        /*将user_information验证状态改为-2*/
+        update user_information set verify_status=-2 where user_id=#{userID};
+
+    </update>
+
+    <!--验证通过-->
+    <update id="verifyPass">
+        /*更新user_information的student_card_front和student_card_contrary字段和验证状态改为1*/
+        update user_information set student_card_front=#{studentCardFront},student_card_contrary=#{studentCardContrary},verify_status=1
+                                where user_id=#{userID};
+        /*删除verify_identification里面的对应字段*/
+        delete from verify_identification where user_id=#{userID};
+
+    </update>
+</mapper>

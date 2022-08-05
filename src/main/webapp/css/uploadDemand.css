@@ -1,0 +1,11 @@
+.range{
+    display:flex;
+    width:100%;
+
+}
+.range p{
+    display: inline;
+    color:grey;
+    margin:5px;
+
+}

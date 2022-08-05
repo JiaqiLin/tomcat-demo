@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<!--namespace:名称空间-->
+<mapper namespace="com.xmu.mapper.DemandMapper">
+
+    <resultMap id="demandResultMap" type="com.xmu.pojo.Demand">
+        <result column="demand_number" property="demandNumber"></result>
+        <result column="user_id" property="userID"></result>
+        <result column="release_time" property="releaseTime"></result>
+        <result column="lower_price" property="lowerPrice"></result>
+        <result column="upper_price" property="upperPrice"></result>
+    </resultMap>
+
+    <select id="selectAllReleased" resultMap="demandResultMap">
+        select demand.demand_number,demand.user_id,demand.release_time,demand.status,
+               demand.category,demand_information.brief,demand_information.description,
+               demand_information.image1,demand_information.image2,demand_information.image3,demand_information.lower_price,demand_information.upper_price
+        from demand,demand_information
+        where demand.demand_number=demand_information.demand_number and demand.status=1
+    </select>
+
+
+    <select id="selectReleasedByDemandNumber"  resultMap="demandResultMap">
+        select *from demand,demand_information where demand_information.demand_number=demand.demand_number and demand.demand_number=#{demandNumber} and status=1;
+    </select>
+
+    <select id="selectByUserID"  resultMap="demandResultMap">
+        select *from demand,demand_information where demand.demand_number=demand_information.demand_number and user_id=#{userID} and status=1
+        order by demand.release_time desc;
+    </select>
+
+     <insert id="add">
+        insert into demand(demand_number,user_id,release_time,status,category)
+        values(null,#{userID},#{releaseTime},#{status},#{category});
+        insert into demand_information(demand_number,brief,description,image1,image2,image3,lower_price,upper_price)
+        values(null,#{brief},#{description},#{image1},#{image2},#{image3},#{lowerPrice},#{upperPrice});
+    </insert>
+
+        <update id="offShelvesByDemandNumber">
+        update demand set status=0 where demand_number=#{demandNumber};
+    </update>
+
+        <update id="upShelvesByDemandNumber">
+        update demand set status=1,release_time=now() where demand_number=#{demandNumber};
+    </update>
+
+        <update id="invisibleByDemandNumber">
+        update demand set status=-1 where demand_number=#{demandNumber};
+    </update>
+
+    <select id="selectReleasedByUserID" resultMap="demandResultMap">
+        select demand.demand_number,demand.user_id,demand.release_time,demand.status,
+               demand.category,demand_information.brief,demand_information.description,
+               demand_information.image1,demand_information.image2,demand_information.image3,demand_information.lower_price,demand_information.upper_price
+        from demand,demand_information
+        where demand.demand_number=demand_information.demand_number and demand.user_id=#{userID} and status=1
+        order by demand.release_time desc;
+    </select>
+
+    <select id="selectOffShelvesByUserID" resultMap="demandResultMap">
+        select demand.demand_number,demand.user_id,demand.release_time,demand.status,
+               demand.category,demand_information.brief,demand_information.description,
+               demand_information.image1,demand_information.image2,demand_information.image3,demand_information.lower_price,demand_information.upper_price
+        from demand,demand_information
+        where demand.demand_number=demand_information.demand_number and demand.user_id=#{userID} and status=0
+        order by demand.release_time desc;
+    </select>
+
+    <select id="selectReleasedByKeyword" resultMap="demandResultMap">
+        select demand.demand_number,demand.user_id,demand.release_time,demand.status,
+               demand.category,demand_information.brief,demand_information.description,
+               demand_information.image1,demand_information.image2,demand_information.image3,demand_information.lower_price,demand_information.upper_price
+        from demand,demand_information
+        where demand.demand_number=demand_information.demand_number and status=1
+              and (demand.category like "%"#{keyword}"%" or demand_information.brief like "%"#{keyword}"%" or
+              demand_information.description like "%"#{keyword}"%");
+    </select>
+
+    <select id="selectReleasedByPage" resultMap="demandResultMap">
+        select demand.demand_number,demand.user_id,demand.release_time,demand.status,
+               demand.category,demand_information.brief,demand_information.description,
+               demand_information.image1,demand_information.image2,demand_information.image3,demand_information.lower_price,demand_information.upper_price
+        from demand,demand_information
+        where demand.demand_number=demand_information.demand_number and status=1
+          <if test="keyword!=null and keyword!=''">
+              and (demand.category like "%"#{keyword}"%" or demand_information.brief like "%"#{keyword}"%" or
+              demand_information.description like "%"#{keyword}"%")
+          </if>
+        limit #{begin},#{size};
+    </select>
+    <select id="selectReleasedTotalCount" resultType="java.lang.Integer">
+        select count(*)
+        from demand,demand_information
+        where demand.demand_number=demand_information.demand_number and status=1
+        <if test="keyword!=null and keyword!=''">
+            and (demand.category like "%"#{keyword}"%" or demand_information.brief like "%"#{keyword}"%" or
+            demand_information.description like "%"#{keyword}"%")
+        </if>;
+    </select>
+</mapper>

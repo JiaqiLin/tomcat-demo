@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8">
+  <title>校园易-认证管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/selfInfo.css"/>
+  <link rel="stylesheet" href="./css/identityManagement.css">
+  <link href="font.css" rel="stylesheet">
+</head>
+<body  style="background-repeat:no-repeat;background-attachment:fixed;background-image:url(./images/bd.png)">
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<!-- 包括所有已编译的插件 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.0.1/js/bootstrap.min.js"></script>
+
+
+<div id="identityManagement">
+  <!--登出提示框-->
+  <div class="modal" tabindex="-1" id="exit">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>确认退出吗？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!--导航栏-->
+  <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
+    <div class="container-fluid">
+      <!--主标-->
+      <a class="navbar-brand mark" href="Home.html">校园易</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!--前部分-->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="idleMALL.html?searchContent=">闲置商城</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="demandMALL.html">需求商城</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              发布
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="uploadIdle.html">发布闲置</a></li>
+              <li><a class="dropdown-item" href="uploadDemand.html">发布需求</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">发布规则</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!--后部分-->
+        <ul class="nav navbar-nav navbar-right">
+          <a href="selfInfo.html" class="nav-link" aria-current="page">{{user.userName}}</a>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="selfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              我的小易
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="myIdles.html">我的闲置</a></li>
+              <li><a class="dropdown-item" href="myDemands.html">我的需求</a></li>
+              <li><a class="dropdown-item" href="myMessages.html">我的消息</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="selfInfo.html">个人信息</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exit">退出登录</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <br><br><br><br><br>
+
+    <div class="container">
+
+      <div class="row clearfix">
+        <!--左侧边栏-->
+        <div class="col-md-2 column">
+
+          <a href="#" class="list-group-item bg-warning active border-warning tag">
+            个人中心
+          </a>
+          <a href="#" class="list-group-item tag">我的收藏</a>
+          <a href="#" class="list-group-item tag">帮助中心</a>
+          <a href="#" class="list-group-item tag">我的消息</a>
+
+          <a href="#" class="list-group-item  tag">
+            账户设置
+          </a>
+          <a href="completeSelfInfo.html" class="list-group-item tag">个人资料</a>
+          <a href="#" class="list-group-item tag">账号绑定</a>
+          <a href="#" class="list-group-item tag active bg-warning border-warning">认证管理</a>
+          <a href="#" class="list-group-item tag">密码设置</a>
+          <a href="#" class="list-group-item tag">安全中心</a>
+          <a href="#" class="list-group-item tag">消息管理</a>
+          <a href="#" class="list-group-item tag">注销账号</a>
+
+
+        </div>
+
+
+        <!--右侧信息-->
+        <div class="col-md-10 column">
+          <div class="row row-cols-2">
+            <!--头像-->
+            <div class="col-2">
+              <img class="headshot" alt="140x140" src="./images/有人离开了.png" />
+            </div>
+            <!--用户名等主要信息-->
+            <div class="col-10 ">
+              <div class="userName">
+
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="tab-content" id="pills-tabContent" style="background:rgba(255,255,255,0.8)">
+            <!--基本信息-->
+            <div class="tab-pane show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+              <div class="content">
+                <h5 class="text-uppercase mb-2"><strong>身份认证</strong></h5>
+                <p class="text-muted"></p>
+                <div class="container">
+                  <!--认证成功-->
+                  <div class="row" v-if="user.verifyStatus===1">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      <strong>已认证</strong>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <!--左侧条目-->
+                    <div class="col-6" >
+                        <p>学生卡正面（无信息）</p>
+                        <img class="studentCardImg" :src="'http://localhost:8080'+user.studentCardFront" alt="未加载"><br>
+                    </div>
+                    <!--右侧条目-->
+                    <div class="col-6" >
+                      <p>学生卡背面（有信息）</p>
+                      <img class="studentCardImg" :src="'http://localhost:8080'+user.studentCardContrary" alt="未加载"><br>
+                    </div>
+                  </div>
+                  <!--认证中-->
+                  <div class="row" v-else-if="user.verifyStatus===-1">
+                    <!--左侧条目-->
+                    <div class="col-6" >
+                      <p>学生卡正面（无信息）</p>
+                      <img class="studentCardImg" :src="'http://localhost:8080'+verifyInfo.studentCardFront" alt="未加载"><br>
+                    </div>
+                    <!--右侧条目-->
+                    <div class="col-6" >
+                      <p>学生卡背面（有信息）</p>
+                      <img class="studentCardImg"  :src="'http://localhost:8080'+verifyInfo.studentCardContrary" alt="未加载"><br>
+                    </div>
+                    <div>
+                      <button type="button" class="btn btn-success" disabled style="margin-left:300px;margin-bottom:50px;margin-top:25px;width:200px" v-on:click="">正在审核中...</button>
+                    </div>
+
+                  </div>
+                  <!--未认证/认证失败-->
+                  <div class="row" v-else>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="user.verifyStatus===-2">
+                      <strong>认证失败！请重新上传学生卡</strong>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <form role="form">
+                      <!--左侧条目-->
+                      <div class="col-6" >
+                        <p>学生卡正面（无信息）</p>
+                        <label for="studentCardFront0" class="form-label"><strong>上传正面</strong></label>
+                        <input class="form-control" type="file" id="studentCardFront0">
+                      </div>
+                      <!--右侧条目-->
+                      <div class="col-6" >
+                        <p>学生卡背面（有信息）</p>
+                        <label for="studentCardContrary0" class="form-label"><strong>上传背面</strong></label>
+                        <input class="form-control" type="file" id="studentCardContrary0">
+                      </div>
+                      <div>
+                        <button type="button" class="btn btn-success" style="margin-left:300px;margin-bottom:50px;margin-top:25px;width:200px" data-bs-toggle="modal" data-bs-target="#uploadTips" v-on:click="upload">上 传</button>
+                      </div>
+                    </form>
+
+                  </div>
+
+
+              </div>
+            </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--卖家联系方式框-->
+    <div class="modal" tabindex="-1" id="uploadTips">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">提示</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>{{message}}<br>
+            </div>
+            <div class="modal-footer">
+              <button type="button" v-on:click="sure" class="btn btn-primary" data-bs-dismiss="modal">确认</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+</div>
+
+
+<script>
+  new Vue({
+            el: "#identityManagement",
+            data:{
+              user: {},
+              verifyInfo: {},
+              message:""
+            },
+            mounted(){
+              //获取session里的账号
+              let user = sessionStorage.getItem("userID");
+              if (user != null) {
+                // 将JSON格式的对象解析为js对象
+                this.currentUserID= JSON.parse(user);
+                axios({
+                  method:"GET",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+                }).then(resp=>{
+                  this.user=resp.data;
+                })
+                  //认证中，显示认证图片
+                  axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/getVerifyInfoByUserID?userID="+this.currentUserID
+                  }).then(resp=>{
+                    this.verifyInfo=resp.data;
+                  })
+
+
+              }
+              else {
+                window.location.href="login.html";
+              }
+            },
+            methods:{
+              //登出
+              exit:function () {
+                sessionStorage.removeItem("userID");
+                window.location.href="Home.html";
+              },
+              upload:function () {
+                //新建一个表单，因为axios，不能直接提交表单
+                let formData=new FormData();
+                //未认证
+                  if(document.getElementById('studentCardFront0')&&document.getElementById('studentCardContrary0')){
+                    formData.append('studentCardFront', document.getElementById('studentCardFront0').files[0]);
+                    formData.append('studentCardContrary', document.getElementById('studentCardContrary0').files[0]);
+                    formData.append('userID',this.user.userID);
+                    console.log(formData);
+                  }
+                  else{
+                    this.message="请正确上传";
+                    return;
+                  }
+                axios({
+                  method:"post",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/addVerifyApply",
+                  data:formData,
+                  headers:{
+                    'Content-Type': 'multipart/form-data'
+                  }
+                }).then(resp=>{
+                  this.message=resp.data==="success"?"上传成功":"上传失败";
+                })
+              },
+              sure:function () {
+                if(this.message==="上传成功"){
+                  //更新一下认证状态
+                  axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+                  }).then(resp=>{
+                    this.user=resp.data;
+                  })
+                  //认证中，显示认证图片
+                  axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/getVerifyInfoByUserID?userID="+this.currentUserID
+                  }).then(resp=>{
+                    this.verifyInfo=resp.data;
+                  })
+                  }
+
+              }
+            }
+
+          }
+  )
+</script>
+
+
+
+</body>
+</html>

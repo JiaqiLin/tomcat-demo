@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<!--  <link href="Home.css" rel="stylesheet">-->
+  <link rel="stylesheet" href="administrator.css"/>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+  <title>审核个人验证-校园易</title>
+</head>
+<body  style="background-repeat:no-repeat;background-attachment:fixed;background-image:url(./images/bd.png)">
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<div class="boxing" id="administrator_verify">
+  <!--登出提示框-->
+  <div class="modal" tabindex="-1" id="exit">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>确认退出吗？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!--左侧边栏-->
+  <div class="left">
+    <!--网页标志和名称-->
+    <div class="mark">
+      <!--可以放一个我们校园易的图标-->
+      校园易
+
+    </div>
+    <!--管理端功能界面-->
+    <div class="function">
+      <ul class="my-list-group">
+        <a href="#" class="my-list-group-item">学籍管理</a>
+        <a href="administrator_user.html" class="my-list-group-item">用户管理</a>
+        <a href="administrator_verify.html" class="chosen my-list-group-item">审核验证</a>
+        <a href="#" class="my-list-group-item">闲置管理</a>
+        <a href="#" class="my-list-group-item">闲置类目</a>
+        <a href="#" class="my-list-group-item">权限设置</a>
+        <a href="#" class="my-list-group-item">需求管理</a>
+        <a href="#" class="my-list-group-item">响应管理</a>
+      </ul>
+    </div>
+  </div>
+
+  <!--右侧边栏-->
+  <div class="right">
+    <!--顶部的打招呼和退出-->
+    <div class="toolbar">
+      <div>亲爱的管理员{{currentAdminID}}，辛苦了!</div>
+      <div>
+        <a data-bs-toggle="modal" data-bs-target="#exit">
+          退出
+          <i class="fa fa-sign-out" style="font-size:25px"></i>
+        </a>
+      </div>
+    </div>
+
+    <!--右下部的主体部分-->
+    <div class="main">
+      <div class="innerBox" v-for="(verifyInfo,index) in verifyInfos" :key="index">
+        <div class="card mb-3 verifyCard">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img :src="'http://localhost:8080'+verifyInfo.studentCardFront" alt="图片加载失败">
+            </div>
+            <div class="col-md-4">
+              <img :src="'http://localhost:8080'+verifyInfo.studentCardContrary" alt="图片加载失败">
+            </div>
+            <div class="col-md-4">
+              <div class="card-body">
+                <br>
+                <h5 class="card-title"> 学号：{{verifyInfo.userID}}</h5>
+                <br><br><br><br><br>
+                <button type="button" class="btn btn-success" style="width:120px;margin-right:10px" data-bs-toggle="modal" data-bs-target="#pass" v-on:click="clickVerifyApply(index)">通过</button>
+                <button type="button" class="btn btn-danger" style="width:120px" data-bs-toggle="modal" data-bs-target="#notPass" v-on:click="clickVerifyApply(index)">验证失败</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  <!-- 通过提示框 -->
+  <div class="modal fade" id="pass" tabindex="-1" aria-labelledby="passPassLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="passPassLabel">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          确认通过？
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="pass">确定</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 通过提示框 -->
+  <div class="modal fade" id="notPass" tabindex="-1" aria-labelledby="notPassLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="notPassLabel">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          确认不通过？
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="notPass">确定</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  new Vue({
+            el:"#administrator_verify",
+            data:{
+              verifyInfos:[],
+              verifyApply:{},
+              message:""
+            },
+            mounted(){
+              axios({
+                method:"get",
+                url:"http://localhost:8080/tomcat_demo_war/userServlet/selectAllVerifyInfo"
+              }).then(resp=>{
+                this.verifyInfos=resp.data;
+              })
+            },
+            methods: {
+              clickVerifyApply:function (index) {
+                this.verifyApply=this.verifyInfos[index];
+              },
+              pass(){
+                axios({
+                  method:"post",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/verifyPass",
+                  data: this.verifyApply
+                }).then(resp=>{
+                  this.message="已通过";
+                  this.update();
+                })
+
+              },
+              notPass(){
+                axios({
+                  method:"get",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/verifyNotPass?userID="+this.verifyApply.userID,
+                }).then(resp=>{
+                  this.message="已不通过";
+                  this.update();
+                })
+
+              },
+              update:function () {
+                //重新查询
+                axios({
+                  method:"get",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/selectAllVerifyInfo"
+                }).then(resp=>{
+                  this.verifyInfos=resp.data;
+                })
+
+              },
+              //登出
+              exit:function () {
+                sessionStorage.removeItem("adminID");
+                window.location.href="Home.html";
+              }
+
+
+
+
+            }
+          }
+  )
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./css/display.css">
+    <link href="font.css" rel="stylesheet">
+    <title>闲置物品详情-校园易</title>
+</head>
+<body background="./images/bd.png" style="background-repeat:no-repeat;background-attachment:fixed">
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+
+
+<div id="idleDisplay">
+    <!--登出提示框-->
+    <div class="modal" tabindex="-1" id="exit">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">提示</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>确认退出吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--导航栏部分-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
+        <div class="container-fluid">
+            <!--主标-->
+            <a class="navbar-brand mark" href="Home.html">校园易</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!--前部分-->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="idleMALL.html?searchContent=">闲置商城</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="demandMALL.html">需求商城</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            发布
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="uploadIdle.html">发布闲置</a></li>
+                            <li><a class="dropdown-item" href="uploadDemand.html">发布需求</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">发布规则</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!--后部分-->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="selfInfo.html" class="nav-link" aria-current="page">{{user.userName}}</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="selfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            我的小易
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="myIdles.html">我的闲置</a></li>
+                            <li><a class="dropdown-item" href="myDemands.html">我的需求</a></li>
+                            <li><a class="dropdown-item" href="myMessages.html">我的消息</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="selfInfo.html">个人信息</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exit">退出登录</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br><br><br>
+
+
+    <!--信息主体部分-->
+    <div class="container">
+            <!--闲置下架-->
+            <div class="text-center mt-5" v-if="ifDeleted===true">
+                <h1>闲置已下架</h1>
+            </div>
+            <!--闲置未下架-->
+            <div class="row clearfix" v-else>
+                <!--图片展示-->
+                <div class="col-4 column">
+
+                    <!--new-->
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img :src="'http://localhost:8080'+idle.image1" class="d-block w-100" alt="暂无图片">
+                            </div>
+                            <div class="carousel-item">
+                                <img :src="'http://localhost:8080'+idle.image2" class="d-block w-100" alt="暂无图片">
+                            </div>
+                            <div class="carousel-item">
+                                <img :src="'http://localhost:8080'+idle.image3" class="d-block w-100" alt="暂无图片">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                </div>
+                <!--详情描述-->
+                <div class="col-5 column">
+                    <div class="goodsInfoCard" style="background-color: rgba(255,255,255,70%);padding:25px">
+                        <h2>
+                            {{idle.brief}}
+                        </h2>
+                        <hr>
+                        <p style="line-height: 200%">
+                            <small>发布时间：{{idle.releaseTime}}</small><br>
+                            <br>
+                            价格：{{idle.price}}<br>
+                            新旧程度：{{idle.oldAndNew}}<br>
+                            品牌：{{idle.brand}}<br>
+                            <br>
+                            详细描述：{{idle.description}}
+                        </p>
+
+                    </div>
+
+                </div>
+                <!--卖家信息-->
+                <div class="col-2 column">
+                    <div class="card" style="width: 18rem;">
+                        <img src="./images/有人离开了.png" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{sponsor.userName}}</h5>
+                            <p class="card-text" style="padding-left:12px">
+                                年级：{{sponsor.level}}<br>
+                                学院：{{sponsor.academy}}<br>
+                                专业：{{sponsor.major}}<br>
+                                <br>
+                                电话：{{sponsor.phoneNumber}}<br>
+                                QQ：{{sponsor.qQ}}<br>
+                                微信：{{sponsor.weChat}}<br>
+                                地址：{{sponsor.address}}<br>
+                                <br>
+                                完成订单数：{{sponsor.completeOrder}}<br>
+                                信用积分：{{sponsor.creditScore}}<br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</div>
+<!--表头-->
+
+
+
+<script>
+    new Vue({
+        el:"#idleDisplay",
+        data:{
+            currentUserID:"",
+            user:"",
+            verifyStatus:"",
+            idle: {},
+            sponsor:{},
+            ifDeleted:true
+        },
+        mounted(){
+
+            //获取url中的闲置号
+            let getUrl = window.location.href;
+            let getParametersString = getUrl.split('?')[1]
+            let getParameters = new URLSearchParams('?'+getParametersString)
+            let idleNumber = getParameters.get('idleNumber')
+
+            //获取用户名
+            //获取session里的账号
+            let user = sessionStorage.getItem("userID");
+            if (user != null) {
+                // 将JSON格式的对象解析为js对象
+                this.currentUserID= JSON.parse(user);
+                axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+                }).then(resp=>{
+                    this.user=resp.data;
+                    this.verifyStatus=this.user.verifyStatus;
+                    //没认证，直接跳转认证页
+                    if(this.verifyStatus!==1){
+                        window.location.href="identityManagement.html";
+                    }
+                })
+            }
+            else
+            {
+                window.location.href="login.html";
+            }
+
+
+            //获取商品信息
+            axios({
+                method:"GET",
+                url:"http://localhost:8080/tomcat_demo_war/idleServlet/getReleasedIdleByIdleNumber?idleNumber="+idleNumber
+            }).then(resp=>{
+                this.idle=resp.data;
+                this.ifDeleted=JSON.stringify(this.responses) == '[]';
+            })
+
+            //获取发布者信息
+            axios({
+                method:"GET",
+                url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByIdleNumber?idleNumber="+idleNumber
+            }).then(resp=>{
+                this.sponsor=resp.data;
+            })
+        },
+        methods:{
+            //登出
+            exit:function () {
+                sessionStorage.removeItem("userID");
+                window.location.href="Home.html";
+            }
+        }
+
+
+    })
+</script>
+
+</body>
+</html>
+

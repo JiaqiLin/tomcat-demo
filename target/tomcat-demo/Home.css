@@ -1,0 +1,144 @@
+
+
+
+.boxing{
+
+}
+/*------------------------上部--------------------------*/
+.top{
+    height:15vh;
+    background-color: #ffc107;
+    width:100%;
+    display: flex;
+}
+.mark{
+    width:15%;
+    height:100%;
+    margin-left: 8%;
+    font-size:70px;
+    font-family: ShangShouQuQiTi;
+    background-color: #ffc107;
+    text-align: center;
+    line-height: 13vh;
+    color: #fff4dc;
+}
+@font-face {
+    font-family: ShangShouQuQiTi;
+    src: url("./fonts/No.156-ShangShouQuQiTi-2.ttf");
+}
+.right{
+    width:58%;
+    height:100vh;
+    padding:20px;
+}
+.search{
+
+}
+.guide{
+    margin-top:15px;
+
+    display:flex;
+}
+.guide a:hover{
+    color:#fff4dc;
+    font-size:26px;
+    font-family: 幼圆;
+}
+.guide a{
+    color:#fff4dc;
+    font-size:26px;
+    font-family: 幼圆;
+}
+.guide li{
+    width:150px;
+}
+/*------------------------中部--------------------------*/
+.middle{
+    margin-top:15px;
+    height: 57vh;
+    width:100%;
+    padding-left:6%;
+    /*    justify-items: center;*/
+    display:flex;
+
+}
+
+.kinds{
+    width:12%;
+    margin:1%;
+    background-color: white;
+    height:100%;
+}
+.bigADs{
+    width:40%;
+    margin:1%;
+    height:100%;
+}
+.smallADs{
+    width:13%;
+    height:100%;
+    margin:1%;
+    display:flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+.userInfo{
+    width:15%;
+    margin:1%;
+    background-color: white;
+    height:100%;
+}
+/*-------------------------底部-------------------------*/
+.bottom{
+    margin-top:50px;
+    width:100%;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding-top:30px;
+    padding-bottom:20px;
+
+
+}
+.guessTitle{
+    display: flex;
+    justify-content: center;
+    width:100%;
+    Letter-spacing:10px;
+    color:#e1a700;
+    font-size: 28px;
+    font-width: 80;
+}
+.goods{
+
+}
+/*-----------------------通用样式-------------------------*/
+a{
+    text-decoration: none;
+    color:#fff4dc;
+}
+a:hover{
+    text-decoration: none;
+    color:black;
+}
+a:active{
+    text-decoration: none;
+    color:black;
+}
+.cardBODY{
+
+}
+.cardIMG{
+    width:100%;
+    height:100%;
+}
+.title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.myCard{
+    margin-bottom: 22px;
+    border:3px solid white;
+}
+.myCard:hover{
+    border:3px solid #FFD700;
+}

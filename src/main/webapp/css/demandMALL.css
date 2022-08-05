@@ -1,0 +1,43 @@
+.headerAndSearch{
+    width: 100%;
+    height: 30%;
+}
+.headerSize{
+    display: inline;
+    width: 40%;
+    float: left;
+    height: 15%;
+    margin: 2% 2% 2% 0%;
+
+
+}
+.searchAndBtnSize{
+    display: inline;
+    width: 50%;
+    float: left;
+    height: 15%;
+    margin: 3% 0% 2% 5%;
+
+}
+.search{
+    width: 60%;
+    height: 50%;
+    margin-left: 10%;
+    display:inline;
+}
+.searchButton{
+    margin-left:5%;
+    width: 10%;
+    height: 5%;
+
+}
+.panelSize{
+    width:90%;margin-top: 1%;margin-left: 0%
+}
+
+.IMG{
+    width:200px;
+    height:200px;
+}
+
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<!--namespace:名称空间-->
+<mapper namespace="com.xmu.mapper.ResponseMapper">
+    <resultMap id="responseResultMap" type="com.xmu.pojo.Response">
+        <result column="response_time" property="responseTime"></result>
+        <collection property="user" ofType="com.xmu.pojo.User">
+            <result column="user_id" property="userID"></result>
+            <result column="user_name" property="userName"></result>
+            <result column="phone_number" property="phoneNumber"></result>
+            <result column="QQ" property="QQ"></result>
+            <result column="WeChat" property="WeChat"></result>
+            <result column="address" property="address"></result>
+            <result column="complete_order" property="completeOrder"></result>
+            <result column="credit_score" property="creditScore"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectByDemandNumber" resultMap="responseResultMap">
+        select response_time,user.user_name,user_information.user_id,user_information.phone_number,
+               user_information.QQ,user_information.WeChat,user_information.address,
+               user_information.complete_order,user_information.credit_score
+        from demand_response,user,user_information
+        where user_information.user_id=demand_response.sponsor_id and user.user_id=user_information.user_id
+              and demand_response.demand_number=#{demandNumber};
+    </select>
+    <insert id="add">
+         insert into demand_response(demand_number,sponsor_id,response_time) values(#{demandNumber},#{user.userID},#{responseTime});
+    </insert>
+</mapper>

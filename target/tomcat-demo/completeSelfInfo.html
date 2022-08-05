@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./css/completeSelfInfo.css"/>
+    <link href="font.css" rel="stylesheet">
+    <title>完善个人信息-校园易</title>
+</head>
+<body  style="background-repeat:no-repeat;background-attachment:fixed;background-image:url(./images/bd.png)">
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<div id="completeSelfInfo">
+
+    <div class="modal" tabindex="-1" id="tips">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">提示</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    修改成功
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" v-on:click="sure">确定</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+    <!--导航栏-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
+        <div class="container-fluid">
+            <!--主标-->
+            <a class="navbar-brand mark" href="Home.html">校园易</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!--前部分-->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="idleMALL.html?searchContent=">闲置商城</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="demandMALL.html">需求商城</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            发布
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="uploadIdle.html">发布闲置</a></li>
+                            <li><a class="dropdown-item" href="uploadDemand.html">发布需求</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">发布规则</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!--后部分-->
+                <ul class="nav navbar-nav navbar-right">
+                        <a href="selfInfo.html" class="nav-link" aria-current="page">{{selfinfo.userName}}</a>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="selfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            我的小易
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="myIdles.html">我的闲置</a></li>
+                            <li><a class="dropdown-item" href="myDemands.html">我的需求</a></li>
+                            <li><a class="dropdown-item" href="myMessages.html">我的消息</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="selfInfo.html">个人信息</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!--提交表单部分-->
+        <div class="row clearfix">
+            <div class="col-1">
+            </div>
+            <div class="col-10 main">
+
+                <form class="border border-light" >
+                    <p class="text-center h3 mb-4">完善个人信息</p>
+                    <br>
+                    <div class="row row-cols-4">
+                        <div class="col-1 formText">用户名：</div>
+                        <div class="col-5">
+                            <input type="text" class="form-control mb-4"  aria-label="userName" v-model="selfinfo.userName" readonly>
+                        </div>
+                        <div class="col-1 formText">真名：</div>
+                        <div class="col-5">
+                            <input type="text" class="form-control mb-4"  aria-label="name" v-model="selfinfo.name">
+                        </div>
+                    </div>
+
+                    <div class="row row-cols-6">
+                        <div class="col-1 formText">电话：</div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" aria-label="phone" v-model="selfinfo.phoneNumber">
+                        </div>
+                        <div class="col-1 formText">QQ：</div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" aria-label="qQ" v-model="selfinfo.qQ">
+                        </div>
+                        <div class="col-1 formText">微信：</div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" aria-label="weChat" v-model="selfinfo.weChat">
+                        </div>
+                    </div>
+                    <hr>
+                    <br>
+                    <div class="row row-cols-6">
+                        <div class="col-1 formText">学院：</div>
+                        <div class="col-3">
+                            <select class="form-select" v-model="selfinfo.academy">
+                                <option selected>{{selfinfo.academy}}</option>
+                                <option value="国际关系学院">国际关系学院</option>
+                                <option value="信息学院">信息学院</option>
+                                <option value="新闻传播学院">新闻传播学院</option>
+                                <option value="化学化工学院">化学化工学院</option>
+                                <option value="继续教育学院">继续教育学院</option>
+                                <option value="材料学院">材料学院</option>
+                                <option value="公共事务学院">公共事务学院</option>
+                                <option value="人文学院">人文学院</option>
+                                <option value="马克思主义学院">马克思主义学院</option>
+                                <option value="建筑与土木工程学院">建筑与土木工程学院</option>
+                                <option value="法学院">法学院</option>
+                                <option value="经济学院">经济学院</option>
+                                <option value="公共卫生学院">公共卫生学院</option>
+                            </select>
+                        </div>
+
+                        <div class="col-1 formText">专业：</div>
+                        <div class="col-3">
+                            <select class="form-select"  v-model="selfinfo.major">
+                                <option selected>{{selfinfo.major}}</option>
+
+                                    <option v-if="selfinfo.academy==='信息学院'" value="软件工程">软件工程</option>
+                                    <option v-if="selfinfo.academy==='信息学院'" value="数字媒体与技术">数字媒体与技术</option>
+                                    <option v-if="selfinfo.academy==='信息学院'" value="人工智能">人工智能</option>
+                                    <option v-if="selfinfo.academy==='信息学院'" value="网络安全">网络安全</option>
+                                    <option v-if="selfinfo.academy==='信息学院'" value="通信工程">通信工程</option>
+                                    <option v-if="selfinfo.academy==='信息学院'" value="计算机科学与技术">计算机科学与技术</option>
+
+                                    <option v-if="selfinfo.academy==='国际关系学院'" value="国际政治学">国际政治学</option>
+                                    <option v-if="selfinfo.academy==='国际关系学院'" value="全球化研究">全球化研究</option>
+
+                                    <!--有待完善-->
+
+                            </select>
+                        </div>
+                        <div class="col-1 formText">年级：</div>
+                        <div class="col-3">
+                            <input type="text" class="form-control mb-4" placeholder="如，2020" aria-label="level" v-model="selfinfo.level">
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="row row-cols-2">
+                        <div class="col-1 formText">地址：</div>
+                        <div class="col-11">
+                        <input type="text" id="userName" class="form-control mb-4" placeholder="可详细到校区，公寓园区，宿舍楼" v-model="selfinfo.address">
+                        </div>
+                    </div>
+
+
+                    <br>
+                    <div class="form-group inputStyle itemStyle">
+                        <label  class="form-label">个人简介</label>
+
+                        <textarea class="form-control" rows="4" placeholder="Write something here..." v-model="selfinfo.brief"></textarea>
+
+                    </div>
+
+                    <br>
+                    <div style="display: flex; align-content: center; justify-content: center; padding:20px" >
+                        <button type="button" class="btn btn-warning" style="width:40%" v-on:click="update" data-bs-toggle="modal" data-bs-target="#tips">提 交</button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+</div>
+<script>
+    new Vue({
+            el: "#completeSelfInfo",
+            data:{
+                selfinfo:{},
+                userName:""
+            },
+        mounted(){
+            //获取session里的账号
+            let user = sessionStorage.getItem("userID");
+            if (user != null) {
+                // 将JSON格式的对象解析为js对象
+                this.currentUserID= JSON.parse(user);
+                //获取个人信息
+                axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+                }).then(resp=>{
+                    this.selfinfo=resp.data;
+                })
+            }
+            else{
+                window.location.href="login.html";
+            }
+
+
+        },
+        methods:{
+            //登出
+            exit:function () {
+                sessionStorage.removeItem("userID");
+                window.location.href="Home.html";
+            },
+            <!--点击更新-->
+            update:function(){
+                let formData=new FormData();
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/updateUserInformation",
+                    data:this.selfinfo
+                }).then(resp=>{
+
+                })
+            },
+
+            <!--点击确定跳转-->
+            sure:function () {
+                window.location.href="selfInfo.html";
+            }
+            }
+        }
+    )
+</script>
+</body>
+</html>

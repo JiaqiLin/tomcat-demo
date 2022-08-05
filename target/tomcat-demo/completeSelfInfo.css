@@ -1,0 +1,12 @@
+.formText{
+    /*padding: 0.375rem 2.25rem 0.375rem 0.75rem;*/
+    padding-top:0.375rem;
+
+    padding-right:0;
+}
+.main{
+    background:rgb(255,255,255,50%);
+    margin-bottom:100px;
+    margin-top:100px;
+    padding:5%;
+}

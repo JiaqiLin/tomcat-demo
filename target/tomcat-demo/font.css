@@ -1,0 +1,19 @@
+@font-face {
+    font-family: ShangShouQuQiTi;
+    src: url("./fonts/No.156-ShangShouQuQiTi-2.ttf");
+}
+@font-face {
+    font-family: YouSheBiaoTiHei-2;
+    src: url("./fonts/YouSheBiaoTiHei-2.ttf");
+}
+.mark{
+    font-size:27px;
+    padding: 0px;
+    background-color: #ffc107;
+    font-family: ShangShouQuQiTi;
+    text-align: center;
+}
+.headline{
+    font-size: 65px;
+    font-family: YouSheBiaoTiHei-2;
+}

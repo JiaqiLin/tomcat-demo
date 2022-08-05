@@ -1,0 +1,279 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/selfInfo.css"/>
+  <link href="font.css" rel="stylesheet">
+  <title>个人信息-校园易</title>
+</head>
+<body  style="background-repeat:no-repeat;background-attachment:fixed;background-image:url(./images/bd.png)">
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<!-- 包括所有已编译的插件 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.0.1/js/bootstrap.min.js"></script>
+
+
+<div id="selfInformation">
+  <!--登出提示框-->
+  <div class="modal" tabindex="-1" id="exit">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>确认退出吗？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!--导航栏-->
+  <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
+    <div class="container-fluid">
+      <!--主标-->
+      <a class="navbar-brand mark" href="Home.html">校园易</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!--前部分-->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="idleMALL.html?searchContent=">闲置商城</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="demandMALL.html">需求商城</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              发布
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="uploadIdle.html">发布闲置</a></li>
+              <li><a class="dropdown-item" href="uploadDemand.html">发布需求</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">发布规则</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <!--后部分-->
+        <ul class="nav navbar-nav navbar-right">
+          <a href="selfInfo.html" class="nav-link" aria-current="page">{{selfinfo.userName}}</a>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="selfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              我的小易
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="myIdles.html">我的闲置</a></li>
+              <li><a class="dropdown-item" href="myDemands.html">我的需求</a></li>
+              <li><a class="dropdown-item" href="myMessages.html">我的消息</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="selfInfo.html">个人信息</a></li>
+              <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exit">退出登录</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+<br><br><br><br><br>
+
+    <div class="container">
+
+      <div class="row clearfix">
+        <!--左侧边栏-->
+        <div class="col-md-2 column">
+
+          <a href="#" class="list-group-item bg-warning active border-warning tag">
+            个人中心
+          </a>
+          <a href="#" class="list-group-item tag">我的收藏</a>
+          <a href="#" class="list-group-item tag">帮助中心</a>
+          <a href="#" class="list-group-item tag">我的消息</a>
+
+          <a href="#" class="list-group-item active bg-warning border-warning tag">
+            账户设置
+          </a>
+          <a href="completeSelfInfo.html" class="list-group-item tag">个人资料</a>
+          <a href="#" class="list-group-item tag">账号绑定</a>
+          <a href="identityManagement.html" class="list-group-item tag">认证管理</a>
+          <a href="#" class="list-group-item tag">密码设置</a>
+          <a href="#" class="list-group-item tag">安全中心</a>
+          <a href="#" class="list-group-item tag">消息管理</a>
+          <a href="#" class="list-group-item tag">注销账号</a>
+
+
+        </div>
+
+
+        <!--右侧信息-->
+        <div class="col-md-10 column">
+          <div class="row row-cols-2">
+            <!--头像-->
+            <div class="col-2">
+              <img class="headshot" alt="140x140" src="./images/有人离开了.png" />
+            </div>
+            <!--用户名等主要信息-->
+            <div class="col-10 ">
+              <div class="userName">
+                {{selfinfo.userName}}
+              </div>
+            </div>
+
+          </div>
+
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <!---->
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active bg-warning border-warning choice" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">基本信息</button>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent" style="background:rgba(255,255,255,0.8)">
+            <!--基本信息-->
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+              <div class="content">
+                <h5 class="text-uppercase mb-2"><strong>个人简介</strong></h5>
+                <p class="text-muted">{{selfinfo.brief}}</p>
+                <div class="container">
+
+                  <div class="row">
+                    <!--左侧条目-->
+                    <div class="col-6" >
+                      <ul class="list-unstyled font-small mt-5 mb-0">
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>学号</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.userID}}</p>
+                        </li>
+
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>姓名</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.name}}</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>学院/专业</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.academy}}/{{selfinfo.major}}</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>年级</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.level}}级</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>电话号码</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.phoneNumber}}</p>
+                        </li>
+
+                      </ul>
+                    </div>
+                    <!--右侧条目-->
+                    <div class="col-6" >
+                      <ul class="list-unstyled font-small mt-5 mb-0">
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>QQ</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.qQ}}</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>微信</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.weChat}}</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>住址</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.address}}</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>完成订单数</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.completeOrder}}</p>
+                        </li>
+
+                        <li>
+                          <p class="text-uppercase mb-2"><strong>信誉积分</strong></p>
+                          <p class="text-muted mb-4">{{selfinfo.creditScore}}</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+<br><br>
+  </div>
+</div>
+
+<script>
+  new Vue({
+            el: "#selfInformation",
+            data:{
+              selfinfo:{},
+            },
+            mounted(){
+              //获取session里的账号
+              let user = sessionStorage.getItem("userID");
+              if (user != null) {
+                // 将JSON格式的对象解析为js对象
+                this.currentUserID= JSON.parse(user);
+              }
+              axios({
+                method:"GET",
+                url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+              }).then(resp=>{
+                this.selfinfo=resp.data;
+              })
+            },
+            methods:{
+              //登出
+              exit:function () {
+                sessionStorage.removeItem("userID");
+                window.location.href="Home.html";
+              }
+            }
+
+          }
+  )
+</script>
+
+
+
+</body>
+</html>
+

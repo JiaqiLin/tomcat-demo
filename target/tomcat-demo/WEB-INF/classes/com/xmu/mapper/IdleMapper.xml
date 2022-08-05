@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<!--namespace:名称空间-->
+<mapper namespace="com.xmu.mapper.IdleMapper">
+
+    <resultMap id="idleResultMap" type="com.xmu.pojo.Idle">
+        <result column="idle_number" property="idleNumber"></result>
+        <result column="user_id" property="userID"></result>
+        <result column="release_time" property="releaseTime"></result>
+        <result column="old_and_new" property="oldAndNew"></result>
+
+    </resultMap>
+
+    <select id="selectAllReleased" resultMap="idleResultMap">
+        select idle.idle_number,idle.user_id,idle.status,idle.release_time,idle.category,
+               idle_information.brief,idle_information.brand,idle_information.description,
+               idle_information.old_and_new,idle_information.image1,idle_information.image2,
+               idle_information.image3,idle_information.price
+        from idle,idle_information
+        where idle.idle_number=idle_information.idle_number and idle.status=1
+        order by idle.release_time desc ;
+    </select>
+
+
+    <select id="selectReleasedByIdleNumber" resultMap="idleResultMap">
+        select idle.idle_number,idle.user_id,idle.status,idle.release_time,idle.category,
+               idle_information.brief,idle_information.brand,idle_information.description,
+               idle_information.old_and_new,idle_information.image1,idle_information.image2,
+               idle_information.image3,idle_information.price
+        from idle,idle_information
+        where idle.idle_number=idle_information.idle_number and idle.idle_number=#{idleNumber} and status=1;
+    </select>
+
+    <insert id="add">
+        insert into idle(idle_number,user_id,release_time,status,category)
+        values(null,#{userID},#{releaseTime},#{status},#{category});
+        insert into idle_information(idle_number,brief,brand,description,old_and_new,image1,image2,image3,price)
+        values(null,#{brief},#{brand},#{description},#{oldAndNew},#{image1},#{image2},#{image3},#{price});
+    </insert>
+
+    <update id="offShelvesByIdleNumber">
+        update idle set status=0 where idle_number=#{idleNumber};
+    </update>
+
+    <update id="upShelvesByIdleNumber">
+        update idle set status=1,release_time=now() where idle_number=#{idleNumber};
+    </update>
+
+    <update id="invisibleByIdleNumber">
+        update idle set status=-1 where idle_number=#{idleNumber};
+    </update>
+
+    <select id="selectReleasedByUserID" resultMap="idleResultMap">
+                select idle.idle_number,idle.user_id,idle.status,idle.release_time,idle.category,
+               idle_information.brief,idle_information.brand,idle_information.description,
+               idle_information.old_and_new,idle_information.image1,idle_information.image2,
+                       idle_information.image3,idle_information.price
+        from idle,idle_information
+        where idle.idle_number=idle_information.idle_number and idle.user_id=#{userID} and status=1
+                order by idle.release_time desc;
+    </select>
+
+    <select id="selectOffShelvesByUserID" resultMap="idleResultMap">
+                select idle.idle_number,idle.user_id,idle.status,idle.release_time,idle.category,
+               idle_information.brief,idle_information.brand,idle_information.description,
+               idle_information.old_and_new,idle_information.image1,idle_information.image2,
+                       idle_information.image3,idle_information.price
+        from idle,idle_information
+        where idle.idle_number=idle_information.idle_number and idle.user_id=#{userID} and status=0
+                order by idle.release_time desc;
+    </select>
+
+    <select id="selectReleasedByKeyword" resultMap="idleResultMap">
+        select idle.idle_number,idle.user_id,idle.status,idle.release_time,idle.category,
+               idle_information.brief,idle_information.brand,idle_information.description,
+               idle_information.old_and_new,idle_information.image1,idle_information.image2,
+               idle_information.image3,idle_information.price
+        from idle,idle_information
+        where idle.idle_number=idle_information.idle_number and idle.status=1
+          and (idle.category LIKE "%"#{keyword}"%" or
+               idle_information.brief LIKE "%"#{keyword}"%" or
+               idle_information.brand LIKE "%"#{keyword}"%" or idle_information.description LIKE "%"#{keyword}"%");
+    </select>
+    <select id="selectReleasedTotalCount" resultType="java.lang.Integer">
+        select count(*)
+        from idle,idle_information
+         where idle.idle_number=idle_information.idle_number and idle.status=1
+         <if test="keyword!=null and keyword!=''">
+             and (idle.category LIKE "%"#{keyword}"%" or
+             idle_information.brief LIKE "%"#{keyword}"%" or
+             idle_information.brand LIKE "%"#{keyword}"%" or idle_information.description LIKE "%"#{keyword}"%")
+         </if>;
+    </select>
+    <select id="selectReleasedByPage" resultMap="idleResultMap">
+         select idle.idle_number,idle.user_id,idle.status,idle.release_time,idle.category,
+               idle_information.brief,idle_information.brand,idle_information.description,
+               idle_information.old_and_new,idle_information.image1,idle_information.image2,
+               idle_information.image3,idle_information.price
+        from idle,idle_information
+        where idle.idle_number=idle_information.idle_number and idle.status=1
+        <if test="keyword!=null and keyword!=''">
+            and (idle.category LIKE "%"#{keyword}"%" or
+            idle_information.brief LIKE "%"#{keyword}"%" or
+            idle_information.brand LIKE "%"#{keyword}"%" or idle_information.description LIKE "%"#{keyword}"%")
+        </if>
+        limit #{begin},#{size};
+ </select>
+
+
+
+</mapper>

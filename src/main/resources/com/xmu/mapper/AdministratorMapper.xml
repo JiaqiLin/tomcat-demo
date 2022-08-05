@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<!--namespace:名称空间-->
+<mapper namespace="com.xmu.mapper.AdministratorMapper">
+    <resultMap id="administratorResultMap" type="com.xmu.pojo.Administrator">
+        <result column="admin_id" property="adminID"></result>
+    </resultMap>
+
+    <select id="selectByAdministratorIDAndPassword"  resultMap="administratorResultMap">
+        select *from admin where admin_id=#{adminID} and password=#{password};
+    </select>
+</mapper>

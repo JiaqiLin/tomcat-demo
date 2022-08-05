@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>校园易-我的需求</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/myDemands.css"/>
+    <link href="font.css" rel="stylesheet">
+</head>
+<body style="background-repeat:no-repeat;background-attachment:fixed;background-image:url(./images/bd.png)">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<div id="myDemands">
+    <!--登出提示框-->
+    <div class="modal" tabindex="-1" id="exit">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">提示</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>确认退出吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--导航栏-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning fixed-top">
+        <div class="container-fluid">
+            <!--主标-->
+            <a class="navbar-brand mark" href="Home.html">校园易</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!--前部分-->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="idleMALL.html?searchContent=">闲置商城</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="demandMALL.html">需求商城</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            发布
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="uploadIdle.html">发布闲置</a></li>
+                            <li><a class="dropdown-item" href="uploadDemand.html">发布需求</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">发布规则</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!--后部分-->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="selfInfo.html" class="nav-link" aria-current="page">{{user.userName}}</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="selfDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            我的小易
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="myIdles.html">我的闲置</a></li>
+                            <li><a class="dropdown-item" href="myDemands.html">我的需求</a></li>
+                            <li><a class="dropdown-item" href="myMessages.html">我的消息</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="selfInfo.html">个人信息</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exit">退出登录</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container" style="margin-top:10%;width: 70%">
+        <div class="row">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-home-tab"  data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true" style="width:50%;font-size: 20px;color:#ffc107"><strong>已发布</strong></button>
+                    <button class="nav-link" id="nav-profile-tab"  data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false" style="width:50%;font-size: 20px;color:#ffc107"><strong>已下架</strong></button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div v-for="(demand,index) in releasedDemands" key="index">
+                        <div class="card myCard">
+                            <div class="card-body">
+                                <div class="row g-0">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2">
+                                        <img class="cardIMG" alt="暂无图片" :src="'http://localhost:8080'+demand.image1" />
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="card-body cardBODY">
+                                            <h5 class="card-title title"><strong>{{demand.brief}}</strong></h5>
+                                            <p class="card-text">
+                                                价格范围：{{demand.lowerPrice}}-{{demand.upperPrice}}元<br>
+                                                <small>{{demand.releaseTime}}</small><br>
+                                            </p>
+                                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#offShelves" v-on:click="fixedOnDemand(demand.demandNumber,demand.brief)">下架</button>
+                                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete" v-on:click="fixedOnDemand(demand.demandNumber,demand.brief)">删除</button>
+                                            <a class="btn link-primary" :href="'demandDisplay.html?demandNumber='+demand.demandNumber">了解更多</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div v-for="(demand,index) in offShelvesDemands" key="index">
+                        <div class="card myCard">
+                            <div class="card-body">
+                                <div class="row g-0">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2">
+                                        <img class="cardIMG" alt="暂无图片" :src="'http://localhost:8080'+demand.image1" />
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="card-body cardBODY">
+                                            <h5 class="card-title title"><strong>{{demand.brief}}</strong></h5>
+                                            <p class="card-text">
+                                                价格范围：{{demand.lowerPrice}}-{{demand.upperPrice}}元<br>
+                                                <small>{{demand.releaseTime}}</small><br>
+                                            </p>
+                                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upShelves" v-on:click="fixedOnDemand(demand.demandNumber,demand.brief)">上架</button>
+                                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete" v-on:click="fixedOnDemand(demand.demandNumber,demand.brief)">删除</button>
+                                            <a class="btn link-primary" :href="'demandDisplay.html?demandNumber='+demand.demandNumber">了解更多</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- 下架提示框 -->
+        <div class="modal fade" id="offShelves" tabindex="-1" aria-labelledby="offShelvesLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="offShelvesLabel">提示</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        确认“{{currentClickDemandBrief}}”下架？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="offShelves">确定</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 删除提示框 -->
+        <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="deleteLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteLabel">提示</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        确认删除“{{currentClickDemandBrief}}”？删除将无法撤回。
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="deleteDemand">确定</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 上架提示框 -->
+        <div class="modal fade" id="upShelves" tabindex="-1" aria-labelledby="upShelvesLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="upShelvesLabel">提示</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        确认“{{currentClickDemandBrief}}”上架？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-on:click="upShelves">确定</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: "#myDemands",
+        data: {
+            releasedDemands: [],
+            offShelvesDemands:[{demandNumber:'16', userID:'2433912739', releaseTime:'2022-07-12 10:48:57', category:'书籍', brief:'星火英语四级', description:'要八成新以上，听力不要做过的', lowerPrice:30.00, upperPrice:40.00, status:0, image1:'/images/demands/3e8a1955b0d3433aa67df2a5984a6659.jpg', image2:'null', image3:'null'}],
+            //查询内容
+            searchContent:"",
+            //是否查询到
+            ifSearch:true,
+            //用户ID
+            currentUserID:"",
+            //用户名
+            user:"",
+            currentClickDemandNumber:"",
+            currentClickDemandBrief:""
+        },
+
+        mounted(){
+            //获取用户名
+            //获取session里的账号
+            let user = sessionStorage.getItem("userID");
+            if (user != null) {
+                // 将JSON格式的对象解析为js对象
+                this.currentUserID= JSON.parse(user);
+                axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+                }).then(resp=>{
+                    this.user=resp.data;
+                })
+            }
+            // else
+            // {
+            //     window.location.href="login.html";
+            // }
+
+
+            //获取我发布闲置
+            this.getMyReleasedDemands();
+            //获取我下架的闲置
+            this.getMyOffShelvesDemands();
+
+        },
+        methods: {
+            //登出
+            exit:function () {
+                sessionStorage.removeItem("userID");
+                window.location.href="Home.html";
+            },
+            <!--获取我发布的闲置-->
+            getMyReleasedDemands:function () {
+                axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/demandServlet/getReleasedDemandsByUserID?userID="+this.currentUserID
+                }).then(resp=>{
+                    this.releasedDemands=resp.data;
+                })
+            },
+            <!--获取我下架的闲置-->
+            getMyOffShelvesDemands:function () {
+                axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/demandServlet/getOffShelvesDemandsByUserID?userID="+this.currentUserID
+                }).then(resp=>{
+                    this.offShelvesDemands=resp.data;
+                })
+            },
+            <!--点击删除/下架按钮-->
+            fixedOnDemand:function(demandNumber,brief) {
+                this.currentClickDemandNumber=demandNumber;
+                this.currentClickDemandBrief=brief;
+            },
+            <!--点击确认下架按钮-->
+            offShelves: function () {
+                axios({
+                    method: "GET",
+                    url: "http://localhost:8080/tomcat_demo_war/demandServlet/offShelvesDemandByDemandNumber?demandNumber=" + this.currentClickDemandNumber
+                }).then(resp => {
+                    //重新获取我发布的闲置
+                    this.getMyReleasedDemands();
+                    //重新获取我下架的闲置
+                    this.getMyOffShelvesDemands();
+
+                })
+
+            },
+            <!--点击确认上架按钮-->
+            upShelves: function () {
+                axios({
+                    method: "GET",
+                    url: "http://localhost:8080/tomcat_demo_war/demandServlet/upShelvesDemandByDemandNumber?demandNumber=" + this.currentClickDemandNumber
+                }).then(resp => {
+                    //重新获取我发布的闲置
+                    this.getMyReleasedDemands();
+                    //重新获取我下架的闲置
+                    this.getMyOffShelvesDemands();
+                })
+
+            },
+            <!--点击确认删除按钮-->
+            deleteDemand: function () {
+                axios({
+                    method: "GET",
+                    url: "http://localhost:8080/tomcat_demo_war/demandServlet/invisibleDemandByDemandNumber?demandNumber=" + this.currentClickDemandNumber
+                }).then(resp => {
+                    //重新获取我发布的闲置
+                    this.getMyReleasedDemands();
+                    //重新获取我下架的闲置
+                    this.getMyOffShelvesDemands();
+                })
+
+            },
+
+
+
+            <!--查找闲置-->
+            search: function () {
+                axios({
+                    method: "POST",
+                    url: "http://localhost:8080/tomcat_war_demo/demandServlet/search?searchContent=" + this.searchContent,
+                }).then(resp => {
+                    this.demands = resp.data;  //接收
+                    this.ifSearch = JSON.stringify(this.commodities) != '{}';
+                })
+            }
+        }
+    })
+</script>
+
+</div>
+</body>
+</html>

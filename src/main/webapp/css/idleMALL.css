@@ -1,0 +1,19 @@
+.cardBODY{
+
+}
+.cardIMG{
+    width:100%;
+    height:100%;
+}
+.title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.myCard{
+    margin-bottom: 22px;
+    border:3px solid white;
+}
+.myCard:hover{
+    border:3px solid #FFD700;
+}

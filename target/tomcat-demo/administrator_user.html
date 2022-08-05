@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="administrator.css"/>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+  <title>管理用户信息-校园易</title>
+</head>
+<body  style="background-repeat:no-repeat;background-attachment:fixed;background-image:url(./images/bd.png)">
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<div class="boxing" id="administrator_user">
+  <!--登出提示框-->
+  <div class="modal" tabindex="-1" id="exit">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">提示</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>确认退出吗？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!--单个删除的模态弹框-->
+  <div class="modal" tabindex="-1" id="deleteForSure">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">确认删除？</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>用户信息将从数据库中删除...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" v-on:click="deleteByUser()" data-bs-dismiss="modal">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--批量删除的模态弹框-->
+  <div class="modal" tabindex="-1" id="deleteALLForSure">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">确认删除？</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>所有选中的用户信息将从数据库中删除...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" v-on:click="deleteByIDs()" data-bs-dismiss="modal">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!--左侧边栏-->
+  <div class="left">
+    <!--网页标志和名称-->
+    <div class="mark">
+      <!--可以放一个我们校园易的图标-->
+      校园易
+
+    </div>
+    <!--管理端功能界面-->
+    <div class="function">
+      <ul class="my-list-group">
+        <a href="#" class="my-list-group-item">学籍管理</a>
+        <a href="administrator_user.html" class="chosen my-list-group-item">用户管理</a>
+        <a href="administrator_verify.html" class="my-list-group-item">审核验证</a>
+        <a href="#" class="my-list-group-item">闲置管理</a>
+        <a href="#" class="my-list-group-item">闲置类目</a>
+        <a href="#" class="my-list-group-item">权限设置</a>
+        <a href="#" class="my-list-group-item">需求管理</a>
+        <a href="#" class="my-list-group-item">响应管理</a>
+      </ul>
+    </div>
+  </div>
+
+  <!--右侧边栏-->
+  <div class="right">
+    <!--顶部的打招呼和退出-->
+    <div class="toolbar">
+      <div>亲爱的管理员{{currentAdminID}}，辛苦了!</div>
+      <div>
+        <a data-bs-toggle="modal" data-bs-target="#exit">
+          退出
+          <i class="fa fa-sign-out" style="font-size:25px"></i>
+        </a>
+      </div>
+    </div>
+
+    <!--右下部的主体部分-->
+    <div class="main">
+      <!--展示选中用户的详情-->
+      <div class="detail">
+        <div class="row row-cols-3">
+          <div class="col-4">
+            学号：{{userBeenChosen.userID}}
+          </div>
+          <div class="col-4">
+            用户名：{{userBeenChosen.userName}}
+          </div>
+          <div class="col-4">
+            姓名：{{userBeenChosen.name}}
+          </div>
+        </div>
+        <div class="row row-cols-3">
+          <div class="col-4">
+            年级：{{userBeenChosen.level}}
+          </div>
+          <div class="col-4">
+            学院：{{userBeenChosen.academy}}
+          </div>
+          <div class="col-4">
+            专业：{{userBeenChosen.major}}
+          </div>
+        </div>
+        <div class="row row-cols-3">
+          <div class="col-4">
+            电话号码：{{userBeenChosen.phoneNumber}}
+          </div>
+          <div class="col-4">
+            QQ：{{userBeenChosen.qQ}}
+          </div>
+          <div class="col-4">
+            微信：{{userBeenChosen.weChat}}
+          </div>
+        </div>
+
+        <div class="row row-cols-3">
+          <div class="col-4">
+            完成订单数：{{userBeenChosen.completeOrder}}
+          </div>
+          <div class="col-4">
+            信誉积分：{{userBeenChosen.creditScore}}
+          </div>
+          <div class="col-4">
+
+          </div>
+        </div>
+        <div class="row row-cols-1">
+          <div class="info">
+            个人简介：{{userBeenChosen.brief}}
+          </div>
+        </div>
+
+
+
+      </div>
+      <!--列表-->
+      <div class="table">
+         <!--搜索功能-->
+        <div class="search">
+        <div class="row row-cols-3">
+          <div class="col-4">
+            <div class="row row-cols-2">
+              <div class="col-2">
+                <div class="tips">年级：</div>
+              </div>
+              <div class="col-10">
+                <select class="form-select form-select-sm" v-model="selectUser.level" aria-label=".form-select-sm example" style="width:60%">
+                  <option selected></option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                </select>
+              </div>
+            </div>
+
+
+          </div>
+
+          <div class="col-4">
+            <div class="row row-cols-2">
+              <div class="col-2">
+                <div class="tips">学院：</div>
+              </div>
+              <div class="col-10">
+                <select class="form-select form-select-sm" v-model="selectUser.academy" aria-label=".form-select-sm example" style="width:60%">
+                  <option selected></option>
+                  <option value="国际关系学院">国际关系学院</option>
+                  <option value="信息学院">信息学院</option>
+                  <option value="新闻传播学院">新闻传播学院</option>
+                  <option value="化学化工学院">化学化工学院</option>
+                  <option value="继续教育学院">继续教育学院</option>
+                  <option value="材料学院">材料学院</option>
+                  <option value="公共事务学院">公共事务学院</option>
+                  <option value="人文学院">人文学院</option>
+                  <option value="马克思主义学院">马克思主义学院</option>
+                  <option value="建筑与土木工程学院">建筑与土木工程学院</option>
+                  <option value="法学院">法学院</option>
+                  <option value="经济学院">经济学院</option>
+                  <option value="公共卫生学院">公共卫生学院</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-4">
+
+            <div class="input-group-sm mb-3" style="display:flex">
+              <input type="text" class="form-control" v-model="selectUser.userID" placeholder="用户学号" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <button class="btn btn-outline-secondary" type="button" id="button-addon2" v-on:click="selectByPageAndCondition()">search</button>
+            </div>
+          </div>
+        </div>
+          <br>
+
+
+        </div>
+         <!--用户信息列表-->
+        <div class="userTable">
+            <table class="my-table">
+              <thead>
+              <tr>
+                <th scope="col-1">
+                  <input type="checkbox" value="" id="swapCheck" v-on:click="swapCheck()">
+                  </th>
+                <th scope="col-1">序号</th>
+                <th scope="col-1">学号</th>
+                <th scope="col-1">用户名</th>
+                <th scope="col-1">姓名</th>
+                <th scope="col-3">学院</th>
+                <th scope="col-1">年级</th>
+                <th scope="col-3">操作</th>
+              </tr>
+              </thead>
+              <tbody >
+                <tr v-for="(user,index) in users" :key="index" v-on:mouseover="overStyle($event)" v-on:click="chosen(index)" v-on:mouseleave="leaveStyle($event)">
+                  <th><input type="checkbox" v-model="checkBoxes.at(index)"/></th>
+                  <th>{{index+1}}</th>
+                  <td>{{user.userID}}</td>
+                  <td>{{user.userName}}</td>
+                  <td>{{user.name}}</td>
+                  <td>{{user.academy}}</td>
+                  <td>{{user.level}}</td>
+                  <td>
+                    <button type="button" class="btn btn-outline-secondary" style="border-color: rgba(255,255,255,0%)" data-bs-toggle="modal" data-bs-target="#deleteForSure" v-on:click="deleteUser(index)">
+                      删除
+                    </button>
+                    <button class="btn btn-outline-secondary" type="button" style="border-color: rgba(255,255,255,0%)" v-on:click="deleteByUser(index)">修改</button>
+                    <button class="btn btn-outline-secondary" type="button" style="border-color: rgba(255,255,255,0%)" v-on:click="deleteByUser(index)">冻结</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+        </div>
+        <div class="changePage">
+          <!--换页和多处理-->
+          <nav aria-label="Page navigation example" style="display:flex">
+            <ul class="pagination pagination-sm">
+              <li class="page-item" v-on:click="setCurrentPage(currentPage-1)">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+
+              <li v-for="(page) in pages" v-on:click="setCurrentPage(page)"><a class="page-link">{{page}}</a></li>
+
+              <li class="page-item" v-on:click="setCurrentPage(currentPage+1)">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+             <span>{{currentPage}} / {{totalPages}}</span>
+          </nav>
+          <div class="manipulate">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#deleteForSure" v-on:click="deleteUser(index)">批量冻结</a>
+            <a href="#" v-on:click="tryToDeleteByIDs()" data-bs-toggle="modal" data-bs-target="#deleteALLForSure"> 批量删除</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+<script>
+  new Vue({
+            el:"#administrator_user",
+            data:{
+              //单页的容量
+              pageSize:8,
+              //总记录数
+              totalCount:"",
+              //总共的页码数
+              totalPages:"",
+              //页面数组
+              pages:[],
+              //当前页码
+              currentPage:1,
+              users:[],
+              //当前登陆的管理员ID
+              currentAdminID:"",
+              //被详细展示的用户
+              userBeenChosen:"",
+              //是否全选(初始状态为否）
+              isCheckAll:false,
+              //复选框们
+              checkBoxes:[],
+              //根据查询条件生成的用户
+              selectUser: {},
+              //将可能被删除的用户
+              userToBeDelete:{},
+              //将要删除的用户id列表
+              usersToBeDelete:[]
+            },
+            mounted(){
+              for(var i=0 ; i<this.pageSize;i++){
+                this.checkBoxes.push(false);
+              }
+
+              //获取session里的账号
+              let admin = sessionStorage.getItem("adminID");
+              if (admin != null) {
+                // 将JSON格式的对象解析为js对象
+                this.currentAdminID= JSON.parse(admin);
+              }
+
+              axios({
+                method:"get",
+                url:"http://localhost:8080/tomcat_demo_war/userServlet/selectByPage?currentPage="+this.currentPage+"&pageSize="+this.pageSize
+              }).then(resp=>{
+                //设置表格数据
+                this.users=resp.data.rows;
+                //设置总页数
+                this.totalCount=resp.data.totalCount;
+                if(this.totalCount%this.pageSize==0){
+                  this.totalPages=this.totalCount/this.pageSize;
+                }else{
+                  let result=this.totalCount/this.pageSize
+                  this.totalPages=parseInt(result)+1;
+                }
+                for(i=1;i<=this.totalPages;i++){
+                  this.pages[i-1]=i;
+                }
+              })
+            },
+            updated() {
+              //在页面加载时读取sessionStorage里的状态信息
+              if (sessionStorage.getItem("store") ) {
+                this.$store.replaceState(Object.assign({}, this.$store.state,JSON.parse(sessionStorage.getItem("store"))))
+              }
+
+              //在页面刷新之前将vuex里的信息保存到sessionStorage里
+              window.addEventListener("beforeunload",()=>{
+                sessionStorage.setItem("store",JSON.stringify(this.$store.state))
+              })
+              console.log("updated");
+            },
+            methods:{
+              //登出
+              exit:function () {
+                sessionStorage.removeItem("adminID");
+                window.location.href="Home.html";
+              },
+              //查询分页数据
+              selectByPage(){
+                axios({
+                  method:"get",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/selectByPage?currentPage="+this.currentPage+"&pageSize="+this.pageSize
+                }).then(resp=>{
+                  //设置表格数据
+                  this.users=resp.data.rows;
+                  //设置总页数
+                  this.totalCount=resp.data.totalCount;
+                })
+              },
+
+              //查询符合条件的分页数据
+              selectByPageAndCondition(){
+                axios({
+                  method:"post",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/selectByPageAndCondition?currentPage="+this.currentPage+"&pageSize="+this.pageSize,
+                  data:this.selectUser
+                }).then(resp=>{
+                  //设置表格数据
+                  this.users=resp.data.rows;
+                  //设置总页数
+                  this.totalCount=resp.data.totalCount;
+                  if(this.totalCount%this.pageSize==0){
+                    this.totalPages=this.totalCount/this.pageSize;
+                  }else{
+                    let result=this.totalCount/this.pageSize
+                    this.totalPages=parseInt(result)+1;
+                  }
+                  this.pages=[];
+                  for(i=1;i<=this.totalPages;i++){
+                    this.pages[i-1]=i;
+                  }
+                })
+              },
+              //设置当前页码
+              setCurrentPage(page){
+                /*if(this.currentPage!=page){//如果切换了页面，相应的全选要恢复默认设置--未全选
+                  this.isCheckAll=false;
+                }*/
+                this.currentPage=page;
+                this.users=[];
+                this.selectByPageAndCondition();
+              },
+              //鼠标悬停在某一个条目上
+              overStyle(e){
+                  e.currentTarget.className='mouseOver';
+              },
+              //选中某一条目，相应条目信息传给详细展示框
+              chosen(index){
+                this.userBeenChosen=this.users[index];
+              },
+              //鼠标离开后样式恢复原样
+              leaveStyle(e){
+                e.currentTarget.className='mouseLeave';
+              },
+              //全选
+              swapCheck(){
+                if(this.isCheckAll){
+                  for(i=0;i<this.checkBoxes.length;i++){
+                      this.checkBoxes[i]=false;
+                    }
+                    this.isCheckAll=false;
+                }
+                else{
+                  for(i=0;i<this.checkBoxes.length;i++){
+                    this.checkBoxes[i]=true;
+                  }
+
+                  this.isCheckAll=true;
+                }
+                this.users=[];
+                this.selectByPageAndCondition();
+
+              },
+              //删除单个用户
+              deleteByUser(){
+                //调用删除的服务
+                axios({
+                  method:"post",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/deleteByUser",
+                  data:this.userToBeDelete
+                }).then(resp=>{
+                    this.users=[];
+                    this.selectByPageAndCondition();
+                })
+              },
+              //设置要删除的用户
+              deleteUser(index){
+                  this.userToBeDelete=this.users[index];
+              },
+              //点击“批量删除”尝试删除选中的用户
+              tryToDeleteByIDs(){
+                this.usersToBeDelete=[];
+                  for(i=0;i<this.users.length;i++){
+                    if(this.checkBoxes[i]===true){
+                      this.usersToBeDelete.push(this.users[i]);
+                    }
+                  }
+              },
+              //根据复选框批量删除用户
+              deleteByIDs(){
+                axios({
+                  method:"post",
+                  url:"http://localhost:8080/tomcat_demo_war/userServlet/deleteByIDs",
+                  data:this.usersToBeDelete
+                }).then(resp=>{
+                  this.users=[];
+                  this.selectByPageAndCondition();
+                })
+              }
+            }
+          }
+  )
+</script>
+</body>
+</html>

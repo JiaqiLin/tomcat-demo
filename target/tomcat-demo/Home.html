@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link href="Home.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <title>首页-校园易</title>
+</head>
+<body  style="background-repeat:no-repeat;background-attachment:fixed;background-size:100% 100%;background-image:url(./images/bd.png)">
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="./js/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<div class="boxing" id="home">
+    <!--顶部工具—+导航+搜索-->
+    <div class="top">
+        <!--左侧的图标-->
+        <div class="mark">
+            校园易
+        </div>
+        <!--右侧-->
+        <div class="right">
+            <!--搜索栏-->
+            <div class="search">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="请输入想要查找的商品" v-model="searchContent">
+                    <button class="btn btn-light" v-on:click="search">搜索</button>
+                </div>
+            </div>
+            <!--导航到商城-->
+            <div class="guide">
+                <ul class="nav">
+                    <li><a   href="idleMALL.html?searchContent=">闲置商城</a></li>
+                    <li><a   href="demandMALL.html">需求商城</a></li>
+                    <li><a  href="uploadIdle.html">发布闲置</a></li>
+                    <li><a  href="uploadDemand.html">发布需求</a></li>
+                    <li><a  href="selfInfo.html">个人信息</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <!--中部分类+广告+小广告+个人信息-->
+    <div class="middle">
+        <!--商品种类导览-->
+        <div class="kinds">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=衣物" class="link-secondary">衣物</a> /
+                    <a href="idleMALL.html?searchContent=饰品" class="link-secondary">饰品</a> /
+                    <a href="idleMALL.html?searchContent=鞋饰" class="link-secondary">鞋饰</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=书籍" class="link-secondary">书籍</a> /
+                    <a href="idleMALL.html?searchContent=文具" class="link-secondary">文具</a> /
+                    <a href="idleMALL.html?searchContent=箱包" class="link-secondary">箱包</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=男鞋" class="link-secondary">男鞋</a> /
+                    <a href="idleMALL.html?searchContent=运动" class="link-secondary">运动</a> /
+                    <a href="idleMALL.html?searchContent=户外" class="link-secondary">户外</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=旅行" class="link-secondary">旅行</a> /
+                    <a href="idleMALL.html?searchContent=生活" class="link-secondary">生活</a> /
+                    <a href="idleMALL.html?searchContent=电子书" class="link-secondary">电子书</a>
+                </li>
+
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=家具" class="link-secondary">家具</a> /
+                    <a href="idleMALL.html?searchContent=家电" class="link-secondary">家电</a> /
+                    <a href="idleMALL.html?searchContent=电子" class="link-secondary">电子</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=日用" class="link-secondary">日用</a> /
+                    <a href="idleMALL.html?searchContent=美妆" class="link-secondary">美妆</a> /
+                    <a href="idleMALL.html?searchContent=宠物" class="link-secondary">宠物</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=酒类" class="link-secondary">酒类</a> /
+                    <a href="idleMALL.html?searchContent=生鲜" class="link-secondary">生鲜</a> /
+                    <a href="idleMALL.html?searchContent=特产" class="link-secondary">特产</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=礼品" class="link-secondary">礼品</a> /
+                    <a href="idleMALL.html?searchContent=鲜花" class="link-secondary">鲜花</a> /
+                    <a href="idleMALL.html?searchContent=绿植" class="link-secondary">绿植</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=医药" class="link-secondary">医药</a> /
+                    <a href="idleMALL.html?searchContent=安装" class="link-secondary">安装</a> /
+                    <a href="idleMALL.html?searchContent=维修" class="link-secondary">维修</a>
+                </li>
+
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=文体" class="link-secondary">文体</a> /
+                    <a href="idleMALL.html?searchContent=户外" class="link-secondary">户外</a> /
+                    <a href="idleMALL.html?searchContent=乐器" class="link-secondary">乐器</a>
+                </li>
+                <li class="list-group-item list-group-item-light">
+                    <a href="idleMALL.html?searchContent=网游" class="link-secondary">网游</a> /
+                    <a href="idleMALL.html?searchContent=虚拟" class="link-secondary">虚拟</a> /
+                    <a href="idleMALL.html?searchContent=周边" class="link-secondary">周边</a>
+                </li>
+            </ul>
+        </div>
+        <!--大广告-->
+        <div class="bigADs">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="./images/add1.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./images/add2.jpg" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./images/add3.jpg" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <!--小广告-->
+        <div class="smallADs">
+            <img src="./images/sadd1.jpg" class="d-block w-100" alt="...">
+
+            <img src="./images/sadd2.jpg" class="d-block w-100" alt="...">
+
+            <img src="./images/sadd3.jpg" class="d-block w-100" alt="...">
+        </div>
+        <!--用户个人信息-->
+        <div class="userInfo">
+            <div class="card">
+                <img src="./images/有人离开了.png" class="card-img-top" alt="..." style="border-radius: 50%;">
+                <div class="card-body">
+                    <h5 class="card-title" v-if="ifLogin===true" style="text-align: center;">{{user.userName}}</h5>
+                    <button v-if="ifLogin===true" type="button" class="button btn-warning" style="display:inline;margin-left: 28%" data-bs-toggle="modal" data-bs-target="#exit">退出登录</button>
+                    <button v-if="ifLogin===false" type="button" class="button btn-warning" style="display:inline;margin-left: 20%"><a href="login.html">登录</a></button>
+                    <button v-if="ifLogin===false" type="button" class="button btn-success" style="display:inline"><a href="signUp.html">注册</a></button>
+                    <p class="card-text" v-if="ifLogin===true" style="padding-left:12px">
+                        <br>
+                        年级：{{user.level}}<br>
+                        学院：{{user.academy}}<br>
+                        专业：{{user.major}}<br>
+                        完成订单数：{{user.completeOrder}}<br>
+                        信用积分：{{user.creditScore}}<br>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--底部：猜你喜欢-->
+    <div class="bottom">
+        <!--猜你喜欢的标题部分-->
+        <div class="guessTitle">
+            <i class="fa fa-hand-o-right" style="font-size:36px"></i>
+            猜你喜欢
+            <i class="fa fa-hand-o-left" style="font-size:36px"></i>
+        </div>
+        <!--猜你喜欢的商品部分-->
+        <div class="container">
+            <br>
+            <div class="goods">
+                <div class="row">
+                    <div v-for="(idle,index) in recommends" :key="index" class="col-sm-4">
+                        <div class="card myCard">
+                            <div class="card-body">
+                                <div class="row g-0">
+                                    <div class="col-md-5">
+                                        <img class="cardIMG" alt="图片未加载" :src="'http://localhost:8080'+idle.image1" />
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="card-body cardBODY">
+                                            <h5 class="card-title title">{{idle.brief}}</h5>
+                                            <p class="card-text">
+                                                价格：{{idle.price}}元<br>
+                                                <small>{{idle.releaseTime}}</small><br>
+                                            </p>
+                                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sponsorContact" v-on:click="showSponsorContactDetails(idle.idleNumber)">我想要</button>
+                                            <a class="btn" :href="'idleDisplay.html?idleNumber='+idle.idleNumber">了解更多</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--卖家联系方式框-->
+    <div class="modal" tabindex="-1" id="sponsorContact">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div v-if="ifDeleted===false">
+                    <div class="modal-header">
+                        <h5 class="modal-title">卖家联系方式</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>电话：{{sponsorContact.phoneNumber}}<br>
+                            QQ：{{sponsorContact.qQ}}<br>
+                            微信：{{sponsorContact.weChat}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="closeSponsorContactDetails()" class="btn btn-secondary" data-bs-dismiss="modal">我知道了</button>
+
+                    </div>
+                </div>
+                <div v-else>
+                    <div class="modal-header">
+                        <h5 class="modal-title">提示</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>宝贝已下架...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="closeSponsorContactDetails()" class="btn btn-secondary" data-bs-dismiss="modal">我知道了</button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--登出提示框-->
+    <div class="modal" tabindex="-1" id="exit">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">提示</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>确认退出吗？</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" v-on:click="exit" class="btn btn-primary" data-bs-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    new Vue({
+            el: "#home",
+            data: {
+                ifLogin: false,
+                currentUserID: "",
+                verifyStatus:"",
+                user: {},
+                recommends: [],
+                //卖家信息
+                sponsorContact: {},
+                //是否删除了
+                ifDeleted: false,
+                //查找内容
+                searchContent:""
+            },
+            mounted(){
+                //获取session里的账号
+                let user = sessionStorage.getItem("userID");
+                if (user != null) {
+                    // 将JSON格式的对象解析为js对象
+                    this.currentUserID= JSON.parse(user);
+                    this.ifLogin=true;
+                    axios({
+                        method:"GET",
+                        url:"http://localhost:8080/tomcat_demo_war/userServlet/getUserByUserID?userID="+this.currentUserID
+                    }).then(resp=>{
+                        this.user=resp.data;
+                        this.verifyStatus=this.user.verifyStatus;
+                    })
+                }
+                else
+                {
+                    this.ifLogin=false;
+                }
+                axios({
+                    method:"GET",
+                    url:"http://localhost:8080/tomcat_demo_war/idleServlet/getAllReleasedIdles?userID="+this.currentUserID
+                }).then(resp=>{
+                    this.recommends=resp.data;
+                })
+            },
+            methods: {
+                search:function () {
+                    window.location.href="idleMALL.html?searchContent="+this.searchContent;
+                },
+                <!--点击我想要按钮-->
+                showSponsorContactDetails: function (idleNumber) {
+                    if(this.ifLogin){
+                        if(this.verifyStatus!==1){
+                            window.location.href="identityManagement.html";
+                        }
+                        axios({
+                            method: "GET",
+                            url: "http://localhost:8080/tomcat_demo_war/userServlet/getUserByIdleNumber?idleNumber=" + idleNumber
+                        }).then(resp => {
+                            this.sponsorContact = resp.data;  //接收
+                            //商品未下架
+                            this.ifDeleted = JSON.stringify(this.sponsorContact) == '{}';
+                        })
+                    }
+                    else{
+                        window.location.href="login.html";
+                    }
+                },
+
+                <!--关闭卖家信息-->
+                closeSponsorContactDetails: function () {
+                    // this.reload();    //重新加载页面
+
+                },
+                //登出
+                exit:function () {
+                    sessionStorage.removeItem("userID");
+                    window.location.href="Home.html";
+                }
+            },
+        }
+    )
+</script>
+</body>
+</html>

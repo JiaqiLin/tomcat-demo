@@ -1,0 +1,27 @@
+.headshot{
+border-radius: 50%;
+    width:80%;
+
+    margin:0;
+}
+.userName{
+    margin:0;
+    line-height:150px;
+    font-size:30px;
+    font-weight: 30;
+
+}
+.content{
+    padding:50px;
+}
+.tag{
+    height:50px;
+    line-height: 35px;
+    width:80%
+
+}
+.choice{
+    color:black;
+
+}
+
